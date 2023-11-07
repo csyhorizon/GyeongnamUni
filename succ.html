@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/succ.css">
+</head>
+<body>
+    <div class="user-wrap">
+        <div class="user-image">
+            <img src="/succ.jpg" width="100%" alt="">
+        </div>
+        <div class="user-text">
+            <p>캡쳐 방지 화면</p>
+        </div>
+        <div class="user-check" id="ck">
+            <p>서포터즈 확인</p>
+        </div>
+    </div>
+
+    <script>
+        var ck = document.getElementById('ck');
+        ck.addEventListener('click', function() {
+            alert('쿠폰 사용이 완료되었습니다');
+
+            var link = '/index.html';
+            location.replace(link);
+        });
+    </script>
+</body>
+</html>
