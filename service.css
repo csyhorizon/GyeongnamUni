@@ -1,0 +1,105 @@
+body{
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
+ }
+
+.quiz {
+    font-size: 2px;
+    color: #000000;
+}
+
+.que1_o {
+    border: 0;
+    border-color: #fff;
+    line-height: 2.5;
+    padding: 0 25px;
+    font-size: 1.1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 20px;
+    background-color: rgba(231, 37, 37, 0.6);
+    background-image: linear-gradient(
+      to top left,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.2) 30%,
+      rgba(0, 0, 0, 0)
+    );
+    box-shadow:
+      inset 2px 2px 3px rgba(255, 255, 255, 0.6),   
+      inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+  }
+  .que1_x {
+    border: 0;
+    line-height: 2.5;
+    padding: 0 25px;
+    font-size: 1.1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 20px;
+    background-color: rgb(52, 183, 216, 0.6);
+    background-image: linear-gradient(
+      to top left,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.2) 30%,
+      rgba(0, 0, 0, 0)
+    );
+    box-shadow:
+      inset 2px 2px 3px rgba(255, 255, 255, 0.6),
+      inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+  }
+  
+  .styled:hover {
+    background-color: rgba(255, 0, 0, 1);
+  }
+  
+  .styled:active {
+    box-shadow:
+      inset -2px -2px 3px rgba(255, 255, 255, 0.6),
+      inset 2px 2px 3px rgba(0, 0, 0, 0.6);
+  }
+
+  .send_v {
+    border: 0;
+    line-height: 2.5;
+    padding: 0 45px;
+    font-size: 1.2rem;
+    text-align: center;
+    color: rgb(44, 4, 21);
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 20px;
+    background-color: rgb(255, 255, 255);
+    background-image: linear-gradient(
+      to top left,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.2) 30%,
+      rgba(0, 0, 0, 0)
+    );
+    box-shadow:
+      inset 2px 2px 3px rgba(255, 255, 255, 0.6),
+      inset -2px -2px 3px rgba(0, 0, 0, 0.6);
+  }
+
+  /* @import url('https://fonts.googleapis.com/css2?family=Hi+Melody&family=Nanum+Pen+Script&family=Noto+Serif+KR:wght@500&display=swap'); */
+  @font-face {
+    font-family: 'NanumPenScript-Regular';
+    src: url('webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('webfont.woff2') format('woff2'), /* Super Modern Browsers */
+         url('webfont.woff') format('woff'), /* Pretty Modern Browsers */
+         url('https://chinoel.github.io/Support_Quiz/font/NanumPenScript-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+         url('webfont.svg#svgFontName') format('svg'); /* Legacy iOS */
+  }
+
+  @font-face {
+    font-family: 'HiMelody-Regular';
+    src: url('webfont.eot?#iefix') format('embedded-opentype'), IE6-IE8
+         url('webfont.woff2') format('woff2'), /* Super Modern Browsers */
+         url('webfont.woff') format('woff'), /* Pretty Modern Browsers */
+         url('https://chinoel.github.io/Support_Quiz/font/HiMelody-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+         url('webfont.svg#svgFontName') format('svg'); /* Legacy iOS */
+  }
+  .font-t{font-family: 'HiMelody-Regular', serif;}
+  
