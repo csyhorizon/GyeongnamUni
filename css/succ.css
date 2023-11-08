@@ -1,3 +1,10 @@
+body{
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-use-select: none;
+    user-select: none;
+   }
+
 .user-wrap {
     width: 100%;
     max-width: 500px;

@@ -1,6 +1,12 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300);
 
-
+body{
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-use-select: none;
+  user-select: none;
+ }
+ 
 .container{
   text-align: center;
   overflow: hidden;
@@ -137,7 +143,7 @@
 
   @font-face {
     font-family: 'HiMelody-Regular';
-    src: url('webfont.eot?#iefix') format('embedded-opentype'), IE6-IE8
+    src: url('webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
          url('webfont.woff2') format('woff2'), /* Super Modern Browsers */
          url('webfont.woff') format('woff'), /* Pretty Modern Browsers */
          url('https://chinoel.github.io/Support_Quiz/font/HiMelody-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
