@@ -84,7 +84,7 @@ var hint2 = document.getElementById('hint2');
 
 send_v.addEventListener('click', function() {
     if(ck1 == que1 && ck2 == que2 && reload == -1) {
-        alert('정답입니다! 상품을 받아가세요.');
+        alert('정답입니다! 금일 상품이 조기 마감되어, 명부 작성후 마일리지 받아가세요!');
         var link = 'https://chinoel.github.io/Support_Quiz/succ.html';
         location.replace(link);
     }
