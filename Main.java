@@ -1,39 +1,41 @@
 import Service.console.CheckData;
 import Service.console.Read;
+import Service.console.compile;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.xml.crypto.Data;
 
 public class Main {
+
     private static final Read read = new Read();
     private static final CheckData checkData = new CheckData();
+    private static final compile compile = new compile();
 
     public static void main(String[] args) throws IOException {
-        String inputValue = "진짜로\nCheck\n가고싶다 ㅋㅋㅋ";
-        ArrayList<String> functionString = read.ReadFile(inputValue);
-
-        // 데이터 검증 -> 실패 시 실패 반환
-        boolean allTestData = true;
-        try {
-            checkData.checkData(functionString);
-        } catch (IllegalStateException e) {
-            System.out.println(e.getMessage());
-            allTestData = false;
-        }
-        System.out.println(allTestData);
+        // main 함수는 테스트를 위해 작성한 코드입니다.
+        String inputValue = "진짜로\n너무집,,\n너무ㅠ\n가고싶다 ㅋㅋㅋ";
+        String result = getHomeLanguageResult(inputValue);
+        System.out.println(result);
     }
 
-    public String getHomeLanguageResult(String inputValue) {
-        ArrayList<String> functionString = read.ReadFile(inputValue);
-        String result = "";
+    public static String getHomeLanguageResult(String inputValue) {
 
-        boolean allTestData = true;
+        ArrayList<String> functionString = read.ReadFile(inputValue);
+        StringBuilder sb = new StringBuilder();
+
         try {
             checkData.checkData(functionString);
+
+            for (int i = 1; i < functionString.size() - 1; i++) {
+                sb.append(compile.compileValue(functionString.get(i)));
+            }
+
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e);
         }
-        return result;
+
+        System.out.println(compile.returntest());
+
+        return sb.toString();
     }
 
 }

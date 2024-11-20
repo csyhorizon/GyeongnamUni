@@ -52,3 +52,7 @@
 > (함수명)집
 > 
 > (함수명)값
+
+
+PLUS, MINUS, MULTIPLY
+FUNCTION, PRINT
