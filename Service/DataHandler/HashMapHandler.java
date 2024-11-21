@@ -12,7 +12,6 @@ public class HashMapHandler implements InputDataHandler {
 
     @Override
     public void addData(String Function, int Value) {
-        System.out.println("Adding data: " + Function + " = " + Value);
         datamap.put(Function, Value);
     }
 

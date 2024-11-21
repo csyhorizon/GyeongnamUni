@@ -12,8 +12,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         // main 함수는 테스트를 위해 작성한 코드입니다.
-        String inputValue = "진짜로\n너무집,,\n너무ㅠ\n가고싶다 ㅋㅋㅋ";
+        String inputValue = "진짜로\n너무집,!!!!,\n너무ㅠ\n너무ㅠㅠ\n가고싶다 ㅋㅋㅋ";
         String result = getHomeLanguageResult(inputValue);
+
         System.out.println(result);
     }
 
@@ -32,8 +33,6 @@ public class Main {
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e);
         }
-
-        System.out.println(compile.returntest());
 
         return sb.toString();
     }
