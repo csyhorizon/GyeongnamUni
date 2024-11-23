@@ -65,7 +65,7 @@ public class compile {
             }
         }
 
-        if (!input.isEmpty()) {
+        if (input.length() != 0) {
             String test = input.toString();
             for (int i = 0; i < test.length(); i++) {
                 String s = test.substring(i, i + 1);

@@ -12,10 +12,10 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         // main 함수는 테스트를 위해 작성한 코드입니다.
-        String inputValue = "진짜로\n너무집,!!!!,\n너무ㅠ\n너무ㅠㅠ\n가고싶다 ㅋㅋㅋ";
-        String result = getHomeLanguageResult(inputValue);
-
-        System.out.println(result);
+//        String inputValue = "진짜로\n너무집,!!!!,\n너무ㅠ\n너무ㅠㅠ\n가고싶다 ㅋㅋㅋ";
+//        String result = getHomeLanguageResult(inputValue);
+//
+//        System.out.println(result);
     }
 
     public static String getHomeLanguageResult(String inputValue) {
