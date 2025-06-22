@@ -31,6 +31,9 @@ RUN pip install --no-cache-dir -r personal_color_server/requirements.txt
 # Copy the rest of the application code
 COPY . .
 
+# Copy model file to the correct location (if it's in saved_models)
+COPY saved_models/mobilenet_skin_best.pth ./skin_status/mobilenet_skin_best.pth
+
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
