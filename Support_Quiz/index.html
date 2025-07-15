@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://chinoel.github.io/Support_Quiz/css/check.css">
+    <!-- css/ -->
+    
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <div class="box" id='next'>
+            <div class="loader8"></div>
+            <p>퀴즈 불러오는중..</p>
+            <div style="font-size: 1.3em;"><strong style="font-family: 'NanumPenScript-Regular', sans-serif; font-size: 40px;">[비교과 Quiz 풀기]</strong>
+                <br><a style="font-family: 'Noto Serif KR', sans-serif; font-size: 20px;">화면을 터치하세요</a></div>
+        </div>
+    </div>
+
+    <script>
+        var next = document.getElementById('next');
+        next.addEventListener('click', function() {
+            var link = 'https://chinoel.github.io/Support_Quiz/service.html';
+            setTimeout(function() {
+                location.replace(link);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
