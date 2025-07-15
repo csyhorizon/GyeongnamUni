@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.github.chinoel'
+version = '0.0.2'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
