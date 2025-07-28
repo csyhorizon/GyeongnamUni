@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 
-from .utils import is_face_present, is_blurry, is_frontal_face
+from .utils import is_face_present, is_frontal_face
 from .level_model import predict_acne_level
 from api.utils import predict_personal_color_from_path
 
@@ -41,18 +41,16 @@ def analyze_faces_and_acne_level(request):
         cv2.imwrite(filepath, image)
 
         face_ok = is_face_present(image)
-        blur_ok = not is_blurry(image)
         frontal_ok = is_frontal_face(image) if face_ok else False
 
         result = {
             "filename": filename,
             "face_detected": face_ok,
-            "not_blurry": blur_ok,
             "frontal": frontal_ok
         }
         results.append(result)
 
-        if selected_image is None and face_ok and blur_ok and frontal_ok:
+        if selected_image is None and face_ok and frontal_ok:
             selected_image = image
             selected_filename = filename
 
