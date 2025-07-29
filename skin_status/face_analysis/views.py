@@ -40,9 +40,9 @@ def crop_face_from_image(image: np.ndarray) -> np.ndarray:
 @api_view(['POST'])
 @parser_classes([MultiPartParser])
 def analyze_faces_and_acne_level(request):
-    images = request.FILES.getlist('image')
-    if not images or len(images) >= 5:
-        return Response({'detail': '이미지 5장이 필요합니다.'}, status=status.HTTP_400_BAD_REQUEST)
+    images = request.FILES.getlist('image')[-5:]
+    if len(images) < 5:
+        return Response({'detail': '이미지 5장이 필요합니다.'}, status=422)
 
     upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploaded')
     os.makedirs(upload_dir, exist_ok=True)
