@@ -1,0 +1,86 @@
+name: Deploy to Self-Hosted Server
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r skin_status/requirements.txt
+          pip install -r personal_color_server/requirements.txt
+          
+      - name: Run tests
+        run: |
+          python -m pytest --tb=short
+        continue-on-error: true
+
+  deploy:
+    needs: test
+    runs-on: self-hosted
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Create network if not exists
+        run: |
+          docker network create smart-mirror-network || true
+
+      - name: Build Docker image
+        run: |
+          docker build -t python-ai-app:latest .
+          docker tag python-ai-app:latest python-ai-app:${{ github.sha }}
+
+      - name: Stop and remove existing container
+        run: |
+          docker stop python-ai-app || true
+          docker rm python-ai-app || true
+
+      - name: Run new Docker container
+        run: |
+          docker run -d \
+            --name python-ai-app \
+            --network smart-mirror-network \
+            -p 8000:8000 \
+            --restart unless-stopped \
+            -v $(pwd)/data:/app/data \
+            -v $(pwd)/saved_models:/app/saved_models \
+            python-ai-app:latest
+
+      - name: Connect frontend to network
+        run: |
+          docker network connect smart-mirror-network my-nextjs-app || true
+
+      - name: Health check
+        run: |
+          sleep 30
+          curl -f http://localhost:8000/health || exit 1
+        continue-on-error: true
+
+      - name: Clean up old images
+        run: |
+          docker image prune -f
+          docker system prune -f
