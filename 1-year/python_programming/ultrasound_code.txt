@@ -1,0 +1,70 @@
+import RPi.GPIO as GPIO
+import time
+
+from module import *
+
+if __name__ == '__main__':
+    # Set the GPIO port to BCM encoding mode
+    GPIO.setmode(GPIO.BCM)
+
+    # Ignore warning information
+    GPIO.setwarnings(False)
+
+    # Create instance from class
+    US = ultraSonic()
+    LIGHT = lightSensor()
+    INF = infraredSensor()
+    LetCarMove = letCarMove()
+    BTN = button()
+    BUZ = buzzer()
+
+    # Test the Car
+    try:
+        BUZ.whistle()
+        BUZ.whistle()
+        print("waiting for button press")
+        BTN.key_scan()
+        print("button detected")
+        BUZ.whistle()
+        
+        while True:
+            d = US.getDistance()
+            
+            if d > 25:
+                LetCarMove.forward(25, 20)
+                
+            elif d <= 25:
+                LetCarMove.brake()
+                US.frontServo_angle(0)
+                rightdistance = US.getDistance()
+                US.frontServo_angle(180)
+                leftdistance = US.getDistance()
+                US.frontServo_angle(90)
+                frontdistance = US.getDistance()
+                
+                light = LIGHT.getValue()
+                print(light)
+                if light == 4:
+                    INF.ifThereIsFire("OFF")
+                else:
+                    INF.ifThereIsFire("ON")
+                    time.sleep(1)
+                    INF.ifThereIsFire("OFF")
+                
+                if leftdistance <= 25 and rightdistance <= 25 and frontdistance <= 25:
+                    LetCarMove.spin_right(55, 50)
+                    time.sleep(0.25)
+                elif leftdistance >= rightdistance:
+                    LetCarMove.spin_left(55, 50)
+                    time.sleep(0.22)
+                elif leftdistance <= rightdistance:
+                    LetCarMove.spin_right(55, 50)
+                    time.sleep(0.25)
+            
+    except KeyboardInterrupt:
+        pass
+    # Stop all GPIO things
+    LetCarMove.motorStop()
+    US.ledStop()
+    US.servoStop()
+    GPIO.cleanup()

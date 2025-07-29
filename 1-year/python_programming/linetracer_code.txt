@@ -1,0 +1,55 @@
+import RPi.GPIO as GPIO
+import time
+
+from module import *
+
+if __name__ == '__main__':
+    # Set the GPIO port to BCM encoding mode
+    GPIO.setmode(GPIO.BCM)
+
+    # Ignore warning information
+    GPIO.setwarnings(False)
+
+    # Create instance from class
+    US = ultraSonic()
+    LIGHT = lightSensor()
+    INF = infraredSensor()
+    LetCarMove = letCarMove()
+    BTN = button()
+    BUZ = buzzer()
+
+    # Test the Car
+    try:
+        BUZ.whistle()
+        BUZ.whistle()
+        print("waiting for button press")
+        BTN.key_scan()
+        print("button detected")
+        BUZ.whistle()
+        
+        while True:
+            seed == LT.getValue()
+            if seed == 1:
+                LetCarMove.spin_right(30,30)
+            elif seed == 2:
+                LetCarMove.spin_left(30,30)
+            elif seed == 3:
+                LetCarMove.spin_left(30,30)
+            elif seed == 4:
+                LetCarMove.spin_right(30,30)
+            elif seed == 5:
+                LetCarMove.spin_left(60,60)
+            elif seed == 6:
+                LetCarMove.spin_right(60,60)
+            elif seed == 7:
+                LetCarMove.foward(10,10)
+            elif seed == 8:
+                LetCarMove.backward(10,10)
+            
+    except KeyboardInterrupt:
+        pass
+    # Stop all GPIO things
+    LetCarMove.motorStop()
+    US.ledStop()
+    US.servoStop()
+    GPIO.cleanup()
