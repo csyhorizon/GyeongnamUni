@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
 
-from .utils import is_face_present, is_frontal_face
 from .level_model import predict_acne_level
 from api.utils import predict_personal_color_from_path
 
@@ -65,24 +64,22 @@ def analyze_faces_and_acne_level(request):
             filepath = os.path.join(upload_dir, filename)
             cv2.imwrite(filepath, image)
 
-            face_ok = is_face_present(image)
-            frontal_ok = is_frontal_face(image) if face_ok else False
+            try:
+                face_crop = crop_face_from_image(image)
+                print(f"[INFO] 얼굴 추출 성공 - idx {idx}, crop shape={face_crop.shape}")
+                analysis_inputs.append((face_crop, filepath))
+                results.append({
+                    "filename": filename,
+                    "face_cropped": True
+                })
+            except Exception as e:
+                print(f"[WARN] 얼굴 추출 실패 - idx {idx}: {str(e)}")
+                results.append({
+                    "filename": filename,
+                    "face_cropped": False,
+                    "error": str(e)
+                })
 
-            print(f"[INFO] 얼굴 탐지 결과 - idx {idx}: face={face_ok}, frontal={frontal_ok}")
-
-            results.append({
-                "filename": filename,
-                "face_detected": face_ok,
-                "frontal": frontal_ok
-            })
-
-            if face_ok and frontal_ok:
-                try:
-                    face_crop = crop_face_from_image(image)
-                    print(f"[INFO] 얼굴 추출 성공 - idx {idx}, crop shape={face_crop.shape}")
-                    analysis_inputs.append((face_crop, filepath))
-                except Exception as e:
-                    print(f"[WARN] 얼굴 추출 실패 - idx {idx}: {str(e)}")
         except Exception as e:
             print(f"[ERROR] 이미지 처리 중 에러 발생 - idx {idx}: {str(e)}")
 
