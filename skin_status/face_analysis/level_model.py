@@ -5,22 +5,28 @@ import cv2
 import os
 from pathlib import Path
 
-# ✅ 정확한 경로 지정
-BASE_DIR = Path(__file__).resolve().parent.parent.parent  # face_analysis 기준
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 model_path = os.path.join(BASE_DIR, 'skin_status', 'mobilenet_skin_best.pth')
-num_classes = 6  # 정상(0) + 1~5레벨 = 6개
-
-# ✅ GPU 사용 불가 환경이므로 무조건 CPU 고정
+num_classes = 6
 device = torch.device("cpu")
 
-# ✅ 모델 정의 및 가중치 로드 (CPU 전용)
-model = models.mobilenet_v2(weights=None)
-model.classifier[1] = nn.Linear(model.classifier[1].in_features, num_classes)
-model.load_state_dict(torch.load(model_path, map_location=device))
-model = model.to(device)
-model.eval()
+# 🔁 모델을 최초 1회만 로드하도록 전역 변수 사용
+_model = None
 
-# ✅ 전처리 정의
+def get_model():
+    global _model
+    if _model is None:
+        print(">>> 모델 로딩 중...")
+        m = models.mobilenet_v2(weights=None)
+        m.classifier[1] = nn.Linear(m.classifier[1].in_features, num_classes)
+        m.load_state_dict(torch.load(model_path, map_location=device))
+        m = m.to(device)
+        m.eval()
+        _model = m
+        print(">>> 모델 로딩 완료")
+    return _model
+
+# ✅ 전처리
 transform = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize((224, 224)),
@@ -30,8 +36,9 @@ transform = transforms.Compose([
 
 # ✅ 추론 함수
 def predict_acne_level(cv2_img):
+    model = get_model()
     rgb_img = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)
-    input_tensor = transform(rgb_img).unsqueeze(0).to(device)  # to(device)는 CPU로 고정됨
+    input_tensor = transform(rgb_img).unsqueeze(0).to(device)
     with torch.no_grad():
         outputs = model(input_tensor)
         probs = torch.softmax(outputs, dim=1)
