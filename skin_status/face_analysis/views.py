@@ -19,14 +19,13 @@ mp_face_detection = mp.solutions.face_detection
 face_detection = mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence=0.5)
 
 def crop_face_from_image(image: np.ndarray) -> np.ndarray:
-    """이미지에서 얼굴 영역만 잘라냄"""
     image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     results = face_detection.process(image_rgb)
 
     if not results.detections:
+        print(f"[WARNING] 얼굴 탐지 실패")
         raise ValueError("얼굴을 찾지 못했습니다.")
 
-    # 가장 첫 번째 얼굴만 사용
     detection = results.detections[0]
     bboxC = detection.location_data.relative_bounding_box
     h, w, _ = image.shape
@@ -53,31 +52,39 @@ def analyze_faces_and_acne_level(request):
     analysis_inputs = []
 
     for idx, img_file in enumerate(images):
-        img_array = np.frombuffer(img_file.read(), np.uint8)
-        image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
-        if image is None:
-            continue
+        try:
+            img_array = np.frombuffer(img_file.read(), np.uint8)
+            image = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            if image is None:
+                print(f"[WARN] 이미지 디코딩 실패: {idx}")
+                continue
 
-        filename = f"{prefix}_{idx}.jpg"
-        filepath = os.path.join(upload_dir, filename)
-        cv2.imwrite(filepath, image)
+            print(f"[INFO] 디코딩 성공 - idx {idx}, shape={image.shape}")
 
-        face_ok = is_face_present(image)
-        frontal_ok = is_frontal_face(image) if face_ok else False
+            filename = f"{prefix}_{idx}.jpg"
+            filepath = os.path.join(upload_dir, filename)
+            cv2.imwrite(filepath, image)
 
-        result = {
-            "filename": filename,
-            "face_detected": face_ok,
-            "frontal": frontal_ok
-        }
-        results.append(result)
+            face_ok = is_face_present(image)
+            frontal_ok = is_frontal_face(image) if face_ok else False
 
-        if face_ok and frontal_ok:
-            try:
-                face_crop = crop_face_from_image(image)
-                analysis_inputs.append((face_crop, filepath))
-            except Exception as e:
-                print(f"[WARN] 얼굴 추출 실패: {str(e)}")
+            print(f"[INFO] 얼굴 탐지 결과 - idx {idx}: face={face_ok}, frontal={frontal_ok}")
+
+            results.append({
+                "filename": filename,
+                "face_detected": face_ok,
+                "frontal": frontal_ok
+            })
+
+            if face_ok and frontal_ok:
+                try:
+                    face_crop = crop_face_from_image(image)
+                    print(f"[INFO] 얼굴 추출 성공 - idx {idx}, crop shape={face_crop.shape}")
+                    analysis_inputs.append((face_crop, filepath))
+                except Exception as e:
+                    print(f"[WARN] 얼굴 추출 실패 - idx {idx}: {str(e)}")
+        except Exception as e:
+            print(f"[ERROR] 이미지 처리 중 에러 발생 - idx {idx}: {str(e)}")
 
     if not analysis_inputs:
         return Response({
@@ -85,25 +92,22 @@ def analyze_faces_and_acne_level(request):
             "results": results
         }, status=422)
 
-    # 피부 분석: 가장 낮은 레벨 (가장 양호한 상태)
     best_level = None
     best_conf = 0.0
-    best_image = None
     best_path = None
 
-    for face_image, filepath in analysis_inputs:
+    for idx, (face_image, filepath) in enumerate(analysis_inputs):
         try:
             level, prob = predict_acne_level(face_image)
-            print(f"[INFO] 예측 결과: level {level}, confidence {prob}")
+            print(f"[INFO] 분석 결과 - idx {idx}: level={level}, conf={prob}")
+
             if best_level is None or level < best_level or (level == best_level and prob > best_conf):
                 best_level = level
                 best_conf = prob
-                best_image = face_image
                 best_path = filepath
         except Exception as e:
-            print(f"[ERROR] 피부 분석 실패: {str(e)}")
+            print(f"[ERROR] 여드름 분석 실패 - idx {idx}: {str(e)}")
 
-    # 퍼스널 컬러 분석
     try:
         personal_color, pc_conf = predict_personal_color_from_path(best_path)
         print(f"[INFO] 퍼스널컬러: {personal_color}, conf: {pc_conf}")
@@ -111,7 +115,6 @@ def analyze_faces_and_acne_level(request):
         print(f"[ERROR] 퍼스널컬러 예측 실패: {str(e)}")
         personal_color, pc_conf = None, None
 
-    # 업로드 이미지 삭제
     try:
         for f in os.listdir(upload_dir):
             os.remove(os.path.join(upload_dir, f))
